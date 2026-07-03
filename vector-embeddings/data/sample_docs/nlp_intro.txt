@@ -1,0 +1,21 @@
+Natural Language Processing: A Practical Overview
+
+Natural language processing, or NLP, is the field of computer science that deals with teaching machines to understand and work with human language. It sits at the intersection of linguistics, statistics, and machine learning, and it powers a surprising amount of the technology people use every day — from the autocomplete in your phone keyboard to the systems that route customer support tickets at scale.
+
+The core challenge is that human language is extraordinarily ambiguous. The word "bank" means something completely different depending on whether you're talking about a riverbank or a financial institution. Words carry connotations, sentences rely on context stretching back several paragraphs, and meaning shifts depending on tone, culture, and intent. Teaching a system to handle this reliably is genuinely hard.
+
+Text preprocessing is usually the first step. Before any model can make sense of text, the raw input needs to be cleaned and normalised. Common steps include tokenisation (breaking text into individual words or subwords), lowercasing, removing punctuation, stemming or lemmatisation (reducing words to their base forms), and filtering out stopwords like "the" or "and" that appear so often they carry little information.
+
+Classical NLP approaches relied heavily on handcrafted rules and statistical methods. Bag-of-words representations counted word frequencies without caring about order. TF-IDF (term frequency–inverse document frequency) weighted those counts to reflect how distinctive a word is across a corpus. These methods are fast, interpretable, and still useful for many keyword-search applications today.
+
+Word embeddings changed the game. Word2Vec, GloVe, and FastText showed that you could train shallow neural networks to produce dense vector representations of words such that semantic relationships became geometric relationships in the vector space. "King" minus "Man" plus "Woman" approximately equals "Queen" — relationships baked directly into the geometry of the space.
+
+Recurrent neural networks (RNNs) and their gated variants, LSTMs and GRUs, handled sequence processing for a long time. They read text one token at a time, maintaining a hidden state that theoretically captured context. In practice, they struggled with long-range dependencies and were slow to train because computation had to proceed sequentially.
+
+The transformer architecture, introduced in the 2017 paper "Attention Is All You Need," resolved many of those issues. Instead of processing tokens sequentially, transformers compute relationships between every pair of tokens in parallel through a mechanism called self-attention. This made training much faster and allowed models to capture long-range dependencies far more effectively. BERT, GPT, and their descendants all build on this foundation.
+
+Modern NLP tasks span a wide range: sentiment analysis (is this review positive or negative?), named entity recognition (which words refer to people, organisations, or places?), question answering, summarisation, translation, text classification, and semantic similarity. Many of these tasks can now be handled by fine-tuning a pre-trained transformer model on a relatively small amount of labelled data, which dramatically lowers the barrier to building useful NLP systems.
+
+Evaluation matters a lot in NLP. Benchmarks like GLUE, SuperGLUE, SQuAD, and MMLU give the community common ground to compare models, though it's worth remembering that benchmark performance doesn't always translate directly to real-world usefulness. A model that scores highly on a summarisation benchmark might still produce outputs that are fluent but subtly incorrect, which is a serious problem in high-stakes domains like medicine or law.
+
+If you're building your own NLP pipeline, the practical advice is to start simple. A TF-IDF baseline often beats intuition about how well a more complex approach will perform. Add complexity only when you can measure that it helps. And always look at your data: many NLP failures trace back to distribution shift between training data and production, or to quirks in the preprocessing pipeline that seemed harmless at first glance.

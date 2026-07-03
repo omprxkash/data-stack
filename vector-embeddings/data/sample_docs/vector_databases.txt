@@ -1,0 +1,23 @@
+Vector Databases: Why They Exist and How They Work
+
+For most of the history of software, databases were built to answer one kind of question efficiently: "does this row match these exact conditions?" Relational databases, with their B-tree indexes and SQL query planners, are extraordinarily good at that. But there's a different kind of question that has become increasingly important: "which of these items is most similar to this query?" That's what vector databases are built to answer.
+
+The shift happened because of embeddings. Modern machine learning models can encode text, images, audio, and other data into dense numerical vectors — lists of floating-point numbers, typically with hundreds or thousands of dimensions. Two items that are semantically similar tend to have vectors that are geometrically close to each other. Finding the most similar items to a query therefore becomes a problem of finding the nearest neighbors in a high-dimensional space.
+
+The naive approach is simple: compute the distance between the query vector and every stored vector, then return the closest ones. This works fine for small collections. But once you have millions or billions of vectors, an exhaustive linear scan becomes too slow for interactive use. You need an index structure that can find approximate nearest neighbors quickly — accepting a small accuracy trade-off in exchange for orders-of-magnitude speed improvements.
+
+Several approximate nearest neighbor (ANN) algorithms are widely used in practice. HNSW (Hierarchical Navigable Small World) builds a layered graph structure where navigation hops between nodes to home in on near-neighbors efficiently. IVF (Inverted File Index) partitions the space into clusters and searches only the most promising clusters for a given query. FAISS, PQ (Product Quantization), and ScaNN are other approaches with different trade-offs between build time, memory usage, and query latency.
+
+Similarity metrics also matter. Cosine similarity measures the angle between two vectors and is the most common choice for text because it focuses on direction rather than magnitude, which makes it robust to differences in text length. Euclidean distance is more appropriate in some image-search and audio contexts. Dot product is often used when embeddings are specifically trained for it, as in many dense retrieval models.
+
+ChromaDB is a local-first vector database that's very easy to get started with — no infrastructure to stand up, just a Python library and a directory to persist data. It uses HNSW under the hood and is a natural starting point for building and experimenting with embedding-based search.
+
+pgvector is a PostgreSQL extension that adds a vector column type and approximate nearest neighbor indexes directly inside Postgres. If your team already runs Postgres in production, pgvector lets you add semantic search without introducing a new system. You pay a modest latency premium compared to a dedicated vector DB, but you get all of Postgres's transactional guarantees, rich filtering, and operational familiarity.
+
+Pinecone, Weaviate, Qdrant, and Milvus are purpose-built vector databases designed for production scale. They handle sharding, replication, and distributed search across large corpora, and they offer managed hosting options if you'd rather not run the infrastructure yourself. The trade-off is complexity and cost compared to the simpler local options.
+
+Metadata filtering is a feature that most vector databases support but that's easy to underestimate. In practice, you almost never want pure nearest-neighbor search across your entire corpus. You want to say "find the most relevant passages from documents published after 2022" or "search only within the 'legal' category." Being able to combine a vector similarity condition with a standard metadata filter is what makes these systems useful for real applications rather than just demos.
+
+Hybrid search — combining keyword-based BM25 retrieval with dense vector retrieval — consistently outperforms either method alone on most benchmarks. Keyword search catches exact-match cases that semantic search misses; semantic search catches paraphrase and concept matches that keyword search misses. A simple weighted sum of normalised scores is often enough to get most of the benefit.
+
+Choosing a vector database is mostly a question of scale, existing infrastructure, and how much operational overhead you're willing to take on. For experiments and small production deployments, ChromaDB or pgvector are excellent choices that get out of the way and let you focus on the application logic. For large-scale production systems, a managed dedicated vector DB is worth the investment.

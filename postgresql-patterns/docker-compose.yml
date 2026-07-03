@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: patterns
+      POSTGRES_USER: patuser
+      POSTGRES_PASSWORD: patpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
+# Health check is defined in the service above; run 'docker compose ps' to see status.
